@@ -13,7 +13,6 @@ func dayOne() int {
 	allLocations := strings.FieldsFunc(s, Split)
 
 	// naive approach
-
 	 var locationOneArr, locationTwoArr []int
 
 	 for i, location := range allLocations {
@@ -30,18 +29,15 @@ func dayOne() int {
 	sort.Ints(locationTwoArr)
 
 	var distances []int
-
 	for i, locationOne := range locationOneArr {
 		locationTwo := locationTwoArr[i]
 		distances = append(distances, int(math.Abs(float64(locationTwo - locationOne))))
     }
 
 	var total int
-
 	for _, distance := range distances {
 		total += distance
     }
-
 
 	return total
 }
