@@ -9,7 +9,7 @@ import (
 )
 
 
-func GetEnv() string {
+func getEnv() string {
 	loadEnv()
 	return os.Getenv("SESSION")
 }
@@ -24,29 +24,25 @@ func loadEnv() {
 	os.Setenv("SESSION", strings.Split(string(bytes), "=")[1])
 }
 
-func GetData(day string) string {
+func getData(day string) string {
 
-	req, err := http.NewRequest("GET",fmt.Sprintf("https://adventofcode.com/2024/day/%s/input", day), nil)
-	if (err != nil) {
-		panic(err)
-	}
+	req := must(http.NewRequest("GET",fmt.Sprintf("https://adventofcode.com/2024/day/%s/input", day), nil))
 
 	
-	req.AddCookie(&http.Cookie{Name: "session", Value: GetEnv()})
+	req.AddCookie(&http.Cookie{Name: "session", Value: getEnv()})
 
-	res, err := http.DefaultClient.Do(req)
+	res := must(http.DefaultClient.Do(req))
 
-	if (err != nil) {
-		panic(err)
-	}
-
-	body, err := io.ReadAll(res.Body)
-
-	if (err != nil) {
-		panic(err)
-	}
+	body  := must(io.ReadAll(res.Body))
 
 	res.Body.Close()
 
 	return string(body)
+}
+
+func must[T any](obj T, err error) T {
+    if err != nil {
+        panic(err)
+    }
+    return obj
 }
