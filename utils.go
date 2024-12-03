@@ -16,7 +16,6 @@ func getEnv() string {
 
 func loadEnv() {
 	bytes := must(os.ReadFile(".env"))
-
 	os.Setenv("SESSION", strings.Split(string(bytes), "=")[1])
 }
 

@@ -13,16 +13,15 @@ func dayOne() int {
 	allLocations := strings.FieldsFunc(s, Split)
 
 	// naive approach
-	 var locationOneArr, locationTwoArr []int
+	var locationOneArr, locationTwoArr []int
 
-	 for i, location := range allLocations {
+	for i, location := range allLocations {
 		distance := must(strconv.Atoi(location))
         if i % 2 == 0 {
             locationOneArr = append(locationOneArr, distance)
 			continue
         }
 		locationTwoArr = append(locationTwoArr, distance)
-	
     }
 
 	sort.Ints(locationOneArr)
