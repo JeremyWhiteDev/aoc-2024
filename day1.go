@@ -7,6 +7,9 @@ import (
 	"strings"
 )
 
+// Given two lists of numbers, order the lists from lowest to highest,
+// and compare the difference of the numbers at matching indexes,
+// collecting the differences into a total "difference" between the two lists
 func dayOne() int {
 	s := getData("1")
 
@@ -24,18 +27,14 @@ func dayOne() int {
 		locationTwoArr = append(locationTwoArr, distance)
     }
 
+	// Sorting is probably the heaviest part of this problem
 	sort.Ints(locationOneArr)
 	sort.Ints(locationTwoArr)
 
-	var distances []int
+	var total int
 	for i, locationOne := range locationOneArr {
 		locationTwo := locationTwoArr[i]
-		distances = append(distances, int(math.Abs(float64(locationTwo - locationOne))))
-    }
-
-	var total int
-	for _, distance := range distances {
-		total += distance
+		total += int(math.Abs(float64(locationTwo - locationOne)))
     }
 
 	return total
