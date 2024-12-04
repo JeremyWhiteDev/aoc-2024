@@ -62,10 +62,10 @@ func dayOnePartTwo() int {
 	for i, location := range allLocations {
 		locationId := must(strconv.Atoi(location))
         if i % 2 == 0 {
-			locationOneMap[locationId] += 1
+			locationOneMap[locationId]++
 			continue
         }
-		locationTwoMap[locationId] += 1
+		locationTwoMap[locationId]++
     }
 
 	var similarityScore int
