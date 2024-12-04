@@ -2,7 +2,6 @@ package main
 
 import (
 	"math"
-	"sort"
 	"strconv"
 	"strings"
 )
@@ -10,35 +9,56 @@ import (
 // Given two lists of numbers, order the lists from lowest to highest,
 // and compare the difference of the numbers at matching indexes,
 // collecting the differences into a total "difference" between the two lists
-func dayTwo() int {
-	s := getData("1")
+func dayTwoPartOne() int {
+	s := getData("2")
 
-	allLocations := strings.FieldsFunc(s, func (r rune) bool {
-		return r == ' ' || r == '\n'
+	allReports := strings.FieldsFunc(s, func (r rune) bool {
+		return r == '\n'
 	})
 
-	var locationOneArr, locationTwoArr []int
+	safeReports := 0
 
-	// split single slice into two seperate slices representing each location
-	for i, location := range allLocations {
-		locationId := must(strconv.Atoi(location))
-        if i % 2 == 0 {
-            locationOneArr = append(locationOneArr, locationId)
-			continue
-        }
-		locationTwoArr = append(locationTwoArr, locationId)
-    }
+	// report is safe if
+	// all increasing
+	// all decreasing
+	// adjacent levels differ by minimum 1 and maximum 3
+	reportIsNotSafe := func(currentLevel, nextLevel int, reportShouldIncrease bool) bool {
+		nextLevelDif := math.Abs(float64(currentLevel - nextLevel))
+		return ((reportShouldIncrease && currentLevel > nextLevel) ||
+			(!reportShouldIncrease && currentLevel < nextLevel) ||
+			(nextLevelDif < 1 ||nextLevelDif > 3))
+	}
 
-	// Sorting is probably the heaviest part of this problem
-	sort.Ints(locationOneArr)
-	sort.Ints(locationTwoArr)
+	for _, report := range allReports {
+		reportArr := strings.Fields(report)
+		reportIsSafe := true
+		reportShouldIncrease := false
+		
 
-	// reduce both slices down to a total "distance" between all the ids
-	var total int
-	for i, locationOne := range locationOneArr {
-		locationTwo := locationTwoArr[i]
-		total += int(math.Abs(float64(locationTwo - locationOne)))
-    }
+		for i, currentLevel := range reportArr {
+			// we're done with this report
+			if len(reportArr) - 1 == i {
+				continue
+			}
+			
+			currentLevel := must(strconv.Atoi(currentLevel))
+			nextLevel := must(strconv.Atoi(reportArr[i +1]))
+			// set whether we expect the report to increase based on the first
+			// two levels
+			if i == 0 {
+				reportShouldIncrease = currentLevel < nextLevel
+			}
 
-	return total
+			if reportIsNotSafe(currentLevel, nextLevel, reportShouldIncrease) {
+				reportIsSafe = false
+				break
+			}
+		}
+
+		if reportIsSafe {
+			safeReports++
+		}
+	}
+	return safeReports
+
 }
