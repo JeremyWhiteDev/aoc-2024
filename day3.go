@@ -11,13 +11,11 @@ func day3Part1() int {
 	total := 0
 
 	re := regexp.MustCompile(`mul\([0-9]{1,3},[0-9]{1,3}\)`)
-	things := re.FindAllString(s, -1)
+	matches := re.FindAllString(s, -1)
 
-	for _, item := range things {
+	for _, item := range matches {
 		pair := strings.Split((item[4:(len(item) - 1)]), ",")
-		int1 := must(strconv.Atoi(pair[0]))
-		int2 := must(strconv.Atoi(pair[1]))
-		total += int1 * int2
+		total += must(strconv.Atoi(pair[0])) * must(strconv.Atoi(pair[1]))
 	}
 	return total
 }
@@ -29,21 +27,18 @@ func day3Part2() int {
 
 	// For part two, I need to add do/dont matching. Then when iterating over the list, just update do/don't
 	re := regexp.MustCompile(`mul\([0-9]{1,3},[0-9]{1,3}\)|do\(\)|don't\(\)`)
-	things := re.FindAllString(s, -1)
+	matches := re.FindAllString(s, -1)
 
-	for _, item := range things {
-		if item == "do()" {
+	for _, match := range matches {
+		if match == "do()" {
 			skip = false
 			continue
 		}
-		if item == "don't()" { skip = true }
-
+		if match == "don't()" { skip = true }
 		if skip { continue }
-		pair := strings.Split((item[4:(len(item) - 1)]), ",")
 
-		int1 := must(strconv.Atoi(pair[0]))
-		int2 := must(strconv.Atoi(pair[1]))
-		total += int1 * int2
+		pair := strings.Split((match[4:(len(match) - 1)]), ",")
+		total += must(strconv.Atoi(pair[0])) * must(strconv.Atoi(pair[1]))
 	}
 	return total
 }
