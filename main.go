@@ -12,6 +12,7 @@ func main() {
 	fmt.Println("Day 2 Part 2 (wrong)Answer: ", dayTwoPartTwo())
 	fmt.Println("Day 2 Part 2 (correct)Answer: ", dayTwoPartTwoSolution())
 	fmt.Println("Day 3 Part 1 Answer: ", day3Part1())
+	fmt.Println("Day 3 Part 2 Answer: ", day3Part2())
 
 }
 
