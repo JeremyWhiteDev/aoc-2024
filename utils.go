@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"slices"
 	"strings"
 )
 
@@ -35,4 +36,25 @@ func must[T any](obj T, err error) T {
         panic(err)
     }
     return obj
+}
+
+func Map[T, V any](slice []T, fn func(T) V) []V {
+    result := make([]V, len(slice))
+    for i, t := range slice {
+        result[i] = fn(t)
+    }
+    return result
+}
+
+func SortToCopy(slice []int, asc bool) []int {
+	sliceCopy := make([]int, len(slice))
+	copy(sliceCopy, slice)
+	if asc {
+		slices.Sort(sliceCopy)
+		return sliceCopy
+	}
+	
+	slices.Sort(sliceCopy)
+	slices.Reverse(sliceCopy)
+	return sliceCopy
 }

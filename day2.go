@@ -2,6 +2,7 @@ package main
 
 import (
 	"math"
+	"reflect"
 	"strconv"
 	"strings"
 )
@@ -61,7 +62,9 @@ func dayTwoPartOne() int {
 	return safeReports
 }
 
-// incorrect currently
+// incorrect currently. I couldn't get this to work as I'm over engineering this problem.
+// I looked up a solution and have comments on that solution's implementation.
+// Solution is below
 func dayTwoPartTwo() int {
 	s := getData("2")
 
@@ -110,12 +113,15 @@ func reportIsSafe(reportArr []string, skipRecursion bool) bool {
 		if i == 0 { continue }
 		currentLevel := must(strconv.Atoi(currentLevel))
 		prevLevel := must(strconv.Atoi(reportArr[i -1]))
+
+		levelIsNotSafe, _ := levelIsNotSafe(currentLevel, prevLevel, reportShouldIncrease)
 		
-		if levelIsNotSafe(currentLevel, prevLevel, reportShouldIncrease) {
+		if levelIsNotSafe {
 			unsafeLevels = append(unsafeLevels, i)
 		}
 	}
 
+	// TODO unsafe reason?
 	if len(unsafeLevels) == 0 {
 		return true
 	}
@@ -132,7 +138,6 @@ func reportIsSafe(reportArr []string, skipRecursion bool) bool {
 		if reportIsSafe(newReport, true) {
 			return true
 		}
-		continue
 	}
 	return false
 }
@@ -140,15 +145,73 @@ func reportIsSafe(reportArr []string, skipRecursion bool) bool {
 // level is safe if
 // The level increases/decreases as expected
 // adjacent levels differ by minimum 1 and maximum 3
-func levelIsNotSafe(currentLevel, prevLevel int, reportShouldIncrease bool) bool {
+func levelIsNotSafe(currentLevel, prevLevel int, reportShouldIncrease bool) (bool, string) {
 	prevLevelDiff := math.Abs(float64(currentLevel - prevLevel))
-	return ((reportShouldIncrease && currentLevel < prevLevel) ||
-		(!reportShouldIncrease && currentLevel > prevLevel) ||
-		(prevLevelDiff < 1 || prevLevelDiff > 3))
+
+	if reportShouldIncrease && currentLevel < prevLevel {
+		return true, "Levels decrease instead of increasing"
+	}
+
+	if !reportShouldIncrease && currentLevel > prevLevel {
+		return true, "Levels increase instead of decrease"
+
+	}
+
+	if prevLevelDiff < 1 {
+		return true, "Levels are the same"
+	}
+
+	if prevLevelDiff > 3 {
+		return true, "Level difference greater than 3"
+	}
+
+	return false, ""
 }
 
 func RemoveIndex(s []string, index int) []string {
     ret := make([]string, 0)
     ret = append(ret, s[:index]...)
     return append(ret, s[index+1:]...)
+}
+
+// This was taken from youtuber Jonathan Paulson and rewritten in Go.
+// I added comments on the failings of my previous enderstanding
+func dayTwoPartTwoSolution() int {
+	s := getData("2")
+	safeReports := 0
+	allReports := strings.FieldsFunc(s, func (r rune) bool { return r == '\n' })
+	
+	for _, report := range allReports {
+		reportArr := Map(strings.Fields(report), func (item string) int  { return must(strconv.Atoi(item)) })
+		if reportIsSafe2(reportArr) {
+			safeReports++
+			continue	
+		}
+
+		for i := range reportArr {
+			// Create a modified report slice excluding the element at index i
+			modReport := append(reportArr[:i:i], reportArr[i+1:]...)
+			if reportIsSafe2(modReport) {
+				safeReports++
+				break
+			}
+		}
+	}
+	return safeReports
+}
+
+func reportIsSafe2(reportArr []int) bool {
+	incOrDec := (reflect.DeepEqual(reportArr, SortToCopy(reportArr, true)) ||
+	reflect.DeepEqual(reportArr, SortToCopy(reportArr, false)))
+	allLevelsSafe := true
+
+for j, level := range reportArr {
+	if j == len(reportArr) - 1 { continue }
+	diff := int(math.Abs(float64(level - reportArr[j+1])))
+	if diff < 1 || diff > 3 { 
+		allLevelsSafe = false
+		break
+	 }
+}
+return incOrDec && allLevelsSafe
 }
