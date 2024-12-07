@@ -2,8 +2,6 @@ package main
 
 import "fmt"
 
-
-
 func main() {
 
 	fmt.Println("Day 1 Part 1 Answer: ", dayOnePartOne())
@@ -17,4 +15,3 @@ func main() {
 	fmt.Println("Day 4 Part 2 Answer: ", day4Part2())
 
 }
-

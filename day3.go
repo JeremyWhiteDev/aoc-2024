@@ -34,8 +34,12 @@ func day3Part2() int {
 			skip = false
 			continue
 		}
-		if match == "don't()" { skip = true }
-		if skip { continue }
+		if match == "don't()" {
+			skip = true
+		}
+		if skip {
+			continue
+		}
 
 		pair := strings.Split((match[4:(len(match) - 1)]), ",")
 		total += must(strconv.Atoi(pair[0])) * must(strconv.Atoi(pair[1]))

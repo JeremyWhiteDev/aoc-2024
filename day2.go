@@ -13,7 +13,7 @@ import (
 func dayTwoPartOne() int {
 	s := getData("2")
 
-	allReports := strings.FieldsFunc(s, func (r rune) bool {
+	allReports := strings.FieldsFunc(s, func(r rune) bool {
 		return r == '\n'
 	})
 
@@ -27,7 +27,7 @@ func dayTwoPartOne() int {
 		nextLevelDif := math.Abs(float64(currentLevel - nextLevel))
 		return ((reportShouldIncrease && currentLevel > nextLevel) ||
 			(!reportShouldIncrease && currentLevel < nextLevel) ||
-			(nextLevelDif < 1 ||nextLevelDif > 3))
+			(nextLevelDif < 1 || nextLevelDif > 3))
 	}
 
 	for _, report := range allReports {
@@ -37,12 +37,12 @@ func dayTwoPartOne() int {
 
 		for i, currentLevel := range reportArr {
 			// we're done with this report
-			if len(reportArr) - 1 == i {
+			if len(reportArr)-1 == i {
 				continue
 			}
-			
+
 			currentLevel := must(strconv.Atoi(currentLevel))
-			nextLevel := must(strconv.Atoi(reportArr[i +1]))
+			nextLevel := must(strconv.Atoi(reportArr[i+1]))
 			// set whether we expect the report to increase based on the first
 			// two levels
 			if i == 0 {
@@ -68,7 +68,7 @@ func dayTwoPartOne() int {
 func dayTwoPartTwo() int {
 	s := getData("2")
 
-	allReports := strings.FieldsFunc(s, func (r rune) bool {
+	allReports := strings.FieldsFunc(s, func(r rune) bool {
 		return r == '\n'
 	})
 
@@ -95,9 +95,11 @@ func reportIsSafe(reportArr []string, skipRecursion bool) bool {
 	// 20 22 19 18 17
 	// 20 21 19 23 24
 	for i, currentLevel := range reportArr {
-		if i == 0 { continue }
+		if i == 0 {
+			continue
+		}
 		currentLevel := must(strconv.Atoi(currentLevel))
-		prevLevel := must(strconv.Atoi(reportArr[i -1]))
+		prevLevel := must(strconv.Atoi(reportArr[i-1]))
 		if currentLevel > prevLevel {
 			numOfLevelIncreases++
 		}
@@ -110,12 +112,14 @@ func reportIsSafe(reportArr []string, skipRecursion bool) bool {
 
 	// iterate over levels and find those levels which are unsafe
 	for i, currentLevel := range reportArr {
-		if i == 0 { continue }
+		if i == 0 {
+			continue
+		}
 		currentLevel := must(strconv.Atoi(currentLevel))
-		prevLevel := must(strconv.Atoi(reportArr[i -1]))
+		prevLevel := must(strconv.Atoi(reportArr[i-1]))
 
 		levelIsNotSafe, _ := levelIsNotSafe(currentLevel, prevLevel, reportShouldIncrease)
-		
+
 		if levelIsNotSafe {
 			unsafeLevels = append(unsafeLevels, i)
 		}
@@ -131,7 +135,7 @@ func reportIsSafe(reportArr []string, skipRecursion bool) bool {
 	if skipRecursion {
 		return false
 	}
-	
+
 	// check if removing any of the levels makes the report safe
 	for _, unsafeLevelIndex := range unsafeLevels {
 		newReport := RemoveIndex(reportArr, unsafeLevelIndex)
@@ -169,9 +173,9 @@ func levelIsNotSafe(currentLevel, prevLevel int, reportShouldIncrease bool) (boo
 }
 
 func RemoveIndex(s []string, index int) []string {
-    ret := make([]string, 0)
-    ret = append(ret, s[:index]...)
-    return append(ret, s[index+1:]...)
+	ret := make([]string, 0)
+	ret = append(ret, s[:index]...)
+	return append(ret, s[index+1:]...)
 }
 
 // This was taken from youtuber Jonathan Paulson and rewritten in Go.
@@ -179,13 +183,13 @@ func RemoveIndex(s []string, index int) []string {
 func dayTwoPartTwoSolution() int {
 	s := getData("2")
 	safeReports := 0
-	allReports := strings.FieldsFunc(s, func (r rune) bool { return r == '\n' })
-	
+	allReports := strings.FieldsFunc(s, func(r rune) bool { return r == '\n' })
+
 	for _, report := range allReports {
-		reportArr := Map(strings.Fields(report), func (item string) int  { return must(strconv.Atoi(item)) })
+		reportArr := Map(strings.Fields(report), func(item string) int { return must(strconv.Atoi(item)) })
 		if reportIsSafe2(reportArr) {
 			safeReports++
-			continue	
+			continue
 		}
 
 		for i := range reportArr {
@@ -202,16 +206,18 @@ func dayTwoPartTwoSolution() int {
 
 func reportIsSafe2(reportArr []int) bool {
 	incOrDec := (reflect.DeepEqual(reportArr, SortToCopy(reportArr, true)) ||
-	reflect.DeepEqual(reportArr, SortToCopy(reportArr, false)))
+		reflect.DeepEqual(reportArr, SortToCopy(reportArr, false)))
 	allLevelsSafe := true
 
-for j, level := range reportArr {
-	if j == len(reportArr) - 1 { continue }
-	diff := int(math.Abs(float64(level - reportArr[j+1])))
-	if diff < 1 || diff > 3 { 
-		allLevelsSafe = false
-		break
-	 }
-}
-return incOrDec && allLevelsSafe
+	for j, level := range reportArr {
+		if j == len(reportArr)-1 {
+			continue
+		}
+		diff := int(math.Abs(float64(level - reportArr[j+1])))
+		if diff < 1 || diff > 3 {
+			allLevelsSafe = false
+			break
+		}
+	}
+	return incOrDec && allLevelsSafe
 }
