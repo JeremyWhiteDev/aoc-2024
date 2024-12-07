@@ -5,11 +5,6 @@ import (
 	"strings"
 )
 
-// type rule struct {
-// 	mustFollow  []int
-// 	mustPrecede []int
-// }
-
 func day5Part1() int {
 	s := getData("5")
 	totalSafeInstructions := 0
