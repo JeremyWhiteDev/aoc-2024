@@ -122,3 +122,59 @@ func day4Part1() int {
 	return total
 
 }
+
+type cursor struct {
+	x int
+	y int
+	lines []string
+}
+
+// get value relative to cursor. If attempted value is out of range, then return the value at the cursor
+func (c *cursor) getRelativeToCursor(x, y int) byte {
+	// get the value at the current cursor
+    if (x + c.x >= len(c.lines[c.y]) || x + c.x < 0) { return c.get() }
+	if (y + c.y >= len(c.lines) || y + c.y < 0) { return c.get() }
+	return c.lines[c.y + y][c.x+x]
+}
+
+// set the cursor's position
+func (c *cursor) setPosition(x, y int) {
+	c.x = x
+	c.y = y
+}
+
+// get the value at the cursor's current coordinates
+func (c *cursor) get() byte {
+	return c.lines[c.y][c.x]
+}
+
+// This is incorrect??
+func day4Part2() int {
+	s := getData("4")
+	total := 0
+	lines := strings.FieldsFunc(s, func (r rune) bool { return r == '\n' })
+	var coordOfA [][]int
+
+
+	for y, line := range lines {
+		for x, c := range line {
+			if c == 'A' {coordOfA = append(coordOfA, []int{x, y})}
+		}
+	}
+
+	cursor := cursor{lines: lines}
+
+	for _, coord := range coordOfA {
+		grc := cursor.getRelativeToCursor
+		cursor.setPosition(coord[0], coord[1])
+		var tlbr, trbl bool
+
+		// top left/bottom right
+		if (grc(-1,-1) == 'M' && grc(1,1) == 'S') || (grc(-1,-1) == 'S' && grc(1,1) == 'M') {tlbr = true}
+		// top right/bottem left
+		if (grc(1,-1) == 'M' && grc(-1,1) == 'S') || (grc(1,-1) == 'S' && grc(-1,1) == 'M') {trbl = true}
+		if tlbr && trbl { total++ }
+	}
+
+	return total
+}
