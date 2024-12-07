@@ -13,5 +13,6 @@ func main() {
 	fmt.Println("Day 3 Part 2 Answer: ", day3Part2())
 	fmt.Println("Day 4 Part 1 Answer: ", day4Part1())
 	fmt.Println("Day 4 Part 2 Answer: ", day4Part2())
+	fmt.Println("Day 5 Part 1 Answer: ", day5Part1())
 
 }
